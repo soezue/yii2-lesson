@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Pets;
 use app\models\PetsSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,6 +21,17 @@ class PetsController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['internal'],
+                'rules' => [
+                    [
+                        'actions' => ['internal'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -104,6 +116,14 @@ class PetsController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionInternal()
+    {
+        return $this->render('internal');
     }
 
     /**
